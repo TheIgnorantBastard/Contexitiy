@@ -1,0 +1,14 @@
+{
+    "name": "myfandom-mfe-graph-module",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "dev": "turbo run dev --parallel",
+      "build": "turbo run build",
+      "test": "turbo run test"
+    },
+    "devDependencies": {
+      "turbo": "latest"
+    }
+  }
+  

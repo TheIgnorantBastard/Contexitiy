@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  neo4j:
+    image: neo4j:5.5
+    container_name: neo4j
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    environment:
+      NEO4J_AUTH: "neo4j/somepassword"
+
+  weaviate:
+    image: semitechnologies/weaviate:1.19.0
+    container_name: weaviate
+    ports:
+      - "8080:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: "25"
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: "./data"
+
+  graph-backend:
+    build:
+      context: ../apps/graph-backend-python
+      dockerfile: ../../docker/Dockerfiles/graph-backend.dockerfile
+    container_name: graph-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - neo4j
+      - weaviate
+    env_file:
+      - ../apps/graph-backend-python/.env
+
+  graph-frontend:
+    build:
+      context: ../apps/graph-frontend-react
+      dockerfile: ../../docker/Dockerfiles/graph-frontend.dockerfile
+    container_name: graph-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - graph-backend
