@@ -1,14 +1,18 @@
 {
-    "name": "myfandom-mfe-graph-module",
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {
-      "dev": "turbo run dev --parallel",
-      "build": "turbo run build",
-      "test": "turbo run test"
-    },
-    "devDependencies": {
-      "turbo": "latest"
-    }
+  "name": "myfandom-mfe-graph-module",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "npm@11.0.0",
+  "workspaces": [
+    "apps/graph-frontend-react",
+    "apps/graph-backend-python"
+  ],
+  "scripts": {
+    "dev": "npx turbo run dev --parallel",
+    "build": "npx turbo run build",
+    "test": "npx turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "latest"
   }
-  
+}
