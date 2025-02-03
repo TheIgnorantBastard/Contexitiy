@@ -8,16 +8,33 @@ services:
       - "7474:7474"
     environment:
       NEO4J_AUTH: "neo4j/somepassword"
+    volumes:
+      - neo4j_data:/data
+    healthcheck:                          # Add this block
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "somepassword", "MATCH (n) RETURN count(n);"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
 
   weaviate:
-    image: semitechnologies/weaviate:1.19.0
+    image: cr.weaviate.io/semitechnologies/weaviate:1.28.4
     container_name: weaviate
     ports:
       - "8080:8080"
     environment:
       QUERY_DEFAULTS_LIMIT: "25"
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
-      PERSISTENCE_DATA_PATH: "./data"
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      CLUSTER_HOSTNAME: "node1"
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    depends_on:
+      - neo4j
+    healthcheck:                          # Add this block
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
 
   graph-backend:
     build:
@@ -27,8 +44,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - neo4j
-      - weaviate
+      neo4j:
+        condition: service_healthy
+      weaviate:
+        condition: service_healthy
     env_file:
       - ../apps/graph-backend-python/.env
 
@@ -40,4 +59,9 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - graph-backend
+      graph-backend:
+        condition: service_healthy
+
+volumes:
+  neo4j_data:
+  weaviate_data:

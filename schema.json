@@ -1,0 +1,13 @@
+{
+  "classes": [
+    {
+      "class": "ContextityClass",
+      "properties": [
+        {
+          "name": "name",
+          "dataType": ["text"]
+        }
+      ]
+    }
+  ]
+}
