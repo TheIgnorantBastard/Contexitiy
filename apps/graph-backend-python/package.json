@@ -1,6 +1,6 @@
 {
   "name": "graph-backend-python",
-  "version": "0.0.1",
+  "version": "0.03",
   "private": true,
   "scripts": {
     "dev": "poetry run uvicorn main:app --reload"
